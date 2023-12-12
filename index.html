@@ -13,7 +13,7 @@
     if (!host || !port) {
       alert('Debe proporcionar la dirección IP y el puerto. Recargue la página para intentarlo nuevamente.');
     } else {
-      const socket = new WebSocket(`ws://${host}:${port}`);
+      const socket = new WebSocket(`was://${host}:${port}`);
 
       socket.addEventListener('open', function (event) {
         console.log(`Conectado al servidor en ${host}:${port}`);
