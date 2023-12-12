@@ -69,11 +69,11 @@
       document.getElementById("popup-message").innerText = message;
       document.getElementById("popup").style.display = "flex";
     }
-
+  
     function closePopup() {
       document.getElementById("popup").style.display = "none";
     }
-
+  
     function startClient() {
       try {
         var host = prompt("Ingrese la dirección IP del servidor:");
@@ -91,23 +91,23 @@
             );
           }
         }
-
+  
         var clientSocket = new WebSocket(`ws://${host}:${port}`);
-
+  
         clientSocket.addEventListener("open", function (event) {
           openPopup(`Conectado al servidor en ${host}:${port}`);
           while (true) {
             var hexData = prompt(
               'Ingrese datos hexadecimales (o "exit" para salir):'
             );
-
+  
             if (hexData.toLowerCase() === "exit") {
               break;
             }
-
+  
             clientSocket.send(hexData);
           }
-
+  
           clientSocket.close();
           closePopup();
         });
@@ -117,8 +117,9 @@
         );
       }
     }
-
+  
     startClient();
   </script>
+  
 </body>
 </html>
