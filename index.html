@@ -1,76 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cliente WebSocket</title>
-  <style>
-    /* Estilos omitidos para brevedad */
-  </style>
 </head>
 <body>
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <div id="popup-message"></div>
-      <button onclick="closePopup()">Cerrar</button>
-    </div>
-  </div>
-
   <script>
-    function openPopup(message) {
-      document.getElementById("popup-message").innerText = message;
-      document.getElementById("popup").style.display = "flex";
-    }
+    const host = prompt('Ingrese la dirección IP del servidor:');
+    const port = prompt('Ingrese el puerto del servidor:');
 
-    function closePopup() {
-      document.getElementById("popup").style.display = "none";
-    }
+    if (!host || !port) {
+      alert('Debe proporcionar la dirección IP y el puerto. Recargue la página para intentarlo nuevamente.');
+    } else {
+      const socket = new WebSocket(`ws://${host}:${port}`);
 
-    function connectToServer(host, port) {
-      try {
-        var clientSocket = new WebSocket(`ws://${host}:${port}`);
+      socket.addEventListener('open', function (event) {
+        console.log(`Conectado al servidor en ${host}:${port}`);
+        sendData();
+      });
 
-        clientSocket.addEventListener("open", function (event) {
-          openPopup(`Conectado al servidor en ${host}:${port}`);
-          while (true) {
-            var hexData = prompt(
-              'Ingrese datos hexadecimales (o "exit" para salir):'
-            );
-
-            if (hexData.toLowerCase() === "exit") {
-              break;
-            }
-
-            clientSocket.send(hexData);
-          }
-
-          clientSocket.close();
-          closePopup();
-        });
-      } catch (error) {
-        openPopup(
-          `Error: No se puede conectar al servidor en ${host}:${port}`
-        );
-      }
-    }
-
-    var host = prompt("Ingrese la dirección IP del servidor:");
-    var port;
-    while (true) {
-      var portStr = prompt("Ingrese el puerto del servidor:");
-      try {
-        port = parseInt(portStr);
-        if (!isNaN(port)) {
-          break;
+      function sendData() {
+        const hexData = prompt('Ingrese datos hexadecimales (o "exit" para salir):');
+        if (hexData.toLowerCase() !== "exit") {
+          socket.send(hexData);
+          sendData();
+        } else {
+          socket.close();
         }
-      } catch (error) {
-        openPopup(
-          "Por favor, ingrese un número entero válido para el puerto."
-        );
       }
-    }
 
-    connectToServer(host, port);
+      socket.addEventListener('close', function (event) {
+        console.log('Conexión cerrada');
+      });
+    }
   </script>
 </body>
 </html>
