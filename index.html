@@ -55,59 +55,59 @@
       }
 
       function startClient() {
-        // Pedir al usuario la dirección IP y el puerto
-        var host = prompt("Ingrese la dirección IP del servidor:");
+        try {
+          // Pedir al usuario la dirección IP y el puerto
+          var host = prompt("Ingrese la dirección IP del servidor:");
 
-        // Manejar la entrada del puerto de manera segura
-        var port;
-        while (true) {
-          var portStr = prompt("Ingrese el puerto del servidor:");
-          try {
-            port = parseInt(portStr);
-            if (!isNaN(port)) {
-              break;
-            }
-          } catch (error) {
-            openPopup(
-              "Por favor, ingrese un número entero válido para el puerto."
-            );
-          }
-        }
-
-        var clientSocket = new WebSocket(`ws://${host}:${port}`);
-
-        clientSocket.addEventListener("open", function (event) {
-          // Mostrar la ventana emergente
-          openPopup(`Conectado al servidor en ${host}:${port}`);
-
-          // Enviar datos al servidor
+          // Manejar la entrada del puerto de manera segura
+          var port;
           while (true) {
-            // Obtener la entrada del usuario en formato hexadecimal
-            var hexData = prompt(
-              'Ingrese datos hexadecimales (o "exit" para salir):'
-            );
-
-            if (hexData.toLowerCase() === "exit") {
-              break;
+            var portStr = prompt("Ingrese el puerto del servidor:");
+            try {
+              port = parseInt(portStr);
+              if (!isNaN(port)) {
+                break;
+              }
+            } catch (error) {
+              openPopup(
+                "Por favor, ingrese un número entero válido para el puerto."
+              );
             }
-
-            // Enviar datos al servidor en formato hexadecimal
-            clientSocket.send(hexData);
           }
 
-          // Cerrar la conexión cuando el usuario decide salir
-          clientSocket.close();
+          var clientSocket = new WebSocket(`ws://${host}:${port}`);
 
-          // Ocultar la ventana emergente
-          closePopup();
-        });
+          clientSocket.addEventListener("open", function (event) {
+            // Mostrar la ventana emergente
+            openPopup(`Conectado al servidor en ${host}:${port}`);
 
-        clientSocket.addEventListener("error", function (event) {
+            // Enviar datos al servidor
+            while (true) {
+              // Obtener la entrada del usuario en formato hexadecimal
+              var hexData = prompt(
+                'Ingrese datos hexadecimales (o "exit" para salir):'
+              );
+
+              if (hexData.toLowerCase() === "exit") {
+                break;
+              }
+
+              // Enviar datos al servidor en formato hexadecimal
+              clientSocket.send(hexData);
+            }
+
+            // Cerrar la conexión cuando el usuario decide salir
+            clientSocket.close();
+
+            // Ocultar la ventana emergente
+            closePopup();
+          });
+        } catch (error) {
           // Mostrar la ventana emergente de error
           openPopup(
             `Error: No se puede conectar al servidor en ${host}:${port}`
           );
-        });
+        }
       }
 
       startClient();
